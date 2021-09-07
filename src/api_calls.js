@@ -6,12 +6,16 @@ const fetchAPIResults = (action, input = null) => {
   else if (action === "train") api_url = TRAIN_API;
   else if (action === "clean") api_url = CLEAN_DATA_API;
 
-  fetch(api_url, { method: "POST", body: input })
-    .then((res) => res.json())
-    .then((result) => {
-      return result;
-    })
+  console.log(input);
+
+  fetch(api_url, { method: "POST", body: JSON.stringify(input) })
+    .then((res) => console.log(res))
+    // .then((result) => {
+    //   console.log(result);
+    //   return result;
+    // })
     .then((err) => {
+      console.log(err);
       return { data: { err: "Something went wrong, Try after sometime" } };
     });
 };
