@@ -3,7 +3,6 @@ import CsvDownload from "react-json-to-csv";
 import { DataTable } from "./dataTable";
 import { EXTRACT_API } from "./constants";
 import { formatData } from "./helper";
-import styles from "./extract.module.css";
 
 export const Extract = () => {
   const [inputFile, setInputFile] = useState(null);
@@ -50,7 +49,7 @@ export const Extract = () => {
   };
 
   return (
-    <div className={styles.extract}>
+    <div style={{ textAlign: "center", marginTop: "50px" }}>
       <div
         style={{ border: "1px solid Grey", width: "80%", marginLeft: "175px" }}
       >
