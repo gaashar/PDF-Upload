@@ -1,10 +1,16 @@
 import React, { useState, useRef } from "react";
+import CsvDownload from "react-json-to-csv";
+import { DataTable } from "./dataTable";
+import { EXTRACT_API } from "./constants";
+import { formatData } from "./helper";
+import styles from "./extract.module.css";
 
 export const Extract = () => {
   const [inputFile, setInputFile] = useState(null);
   const [bankName, setBankName] = useState("");
   const [isFileSelected, setIsFileSelected] = useState(false);
-  const [downloadableFile, setDownloadableFile] = useState(null);
+  const [extractedData, setExtractedData] = useState(null);
+  const [extractedDataHeaders, setExtractedDataHeaders] = useState([]);
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const inputRef = useRef(null);
@@ -22,27 +28,29 @@ export const Extract = () => {
       };
       setIsLoading(true);
       setIsFileSelected(false);
-      fetch("http://18.135.170.159:8081/extract", requestOptions)
+      fetch(EXTRACT_API, requestOptions)
         .then((response) => response.text())
         .then((result) => {
-          console.log(result);
-          const json = JSON.stringify(result);
-          const blob = new Blob([json], { type: "application/json" });
-          return URL.createObjectURL(blob);
-        })
-        .then((href) => {
-          setDownloadableFile(href);
-          setIsFileSelected(false);
+          const { headers, output } = formatData(result);
           setIsLoading(false);
-          setBankName("");
-          inputRef.current.value = "";
+          setExtractedData(output);
+          setExtractedDataHeaders(headers);
         })
-        .catch((err) => setError(err));
+        .catch((err) => {
+          setIsLoading(false);
+          setError(err);
+        });
     }
   };
 
+  const handleClear = () => {
+    setIsFileSelected(false);
+    setBankName("");
+    inputRef.current.value = "";
+  };
+
   return (
-    <div style={{ textAlign: "center", marginTop: "50px" }}>
+    <div className={styles.extract}>
       <div
         style={{ border: "1px solid Grey", width: "80%", marginLeft: "175px" }}
       >
@@ -73,21 +81,35 @@ export const Extract = () => {
               setIsFileSelected(true);
             }}
           />
-          <button
-            style={{
-              marginLeft: "20px",
-              margin: "50px",
-              width: "100px",
-              padding: "5px",
-              fontWeight: "bold",
-            }}
-            onClick={handleExtract}
-          >
-            EXTRACT
-          </button>
+          <div>
+            <button
+              style={{
+                marginLeft: "20px",
+                margin: "50px",
+                width: "100px",
+                padding: "5px",
+                fontWeight: "bold",
+              }}
+              onClick={handleExtract}
+            >
+              EXTRACT
+            </button>
+            <button
+              style={{
+                marginLeft: "20px",
+                margin: "50px",
+                width: "100px",
+                padding: "5px",
+                fontWeight: "bold",
+              }}
+              onClick={handleClear}
+            >
+              CLEAR
+            </button>
+          </div>
         </div>
         {isFileSelected && (
-          <div>
+          <div style={{ color: "#3f51b5" }}>
             <p>Filename: {inputFile.name}</p>
             <p>Size in bytes: {inputFile.size}</p>
             <h4 style={{ paddingTop: "10px" }}>
@@ -96,26 +118,35 @@ export const Extract = () => {
           </div>
         )}
         {isLoading && (
-          <div style={{ paddingTop: "10px" }}>
+          <div style={{ paddingTop: "10px", color: "#3f51b5" }}>
             <h4>EXTRACTION IN PROCESS... PLEASE WAIT</h4>
           </div>
         )}
-        {downloadableFile && (
-          <div style={{ padding: "10px 0px" }}>
-            <h4>
-              FILE EXTRACTED SUCCESSFULLY! CLICK ON THE BELOW LINK TO VIEW
-            </h4>
-            <a href={downloadableFile} target="_blank">
-              EXTRACTED DATA
-            </a>
-          </div>
-        )}
         {error && (
-          <div style={{ paddingTop: "10px" }}>
+          <div style={{ paddingTop: "10px", color: "red" }}>
             <h4>SOMETHING WENT WRONG. PLEASE TRY AFTER SOMETIME.</h4>
           </div>
         )}
       </div>
+      {extractedData && (
+        <div style={{ margin: "60px" }}>
+          <CsvDownload
+            data={extractedData}
+            style={{
+              border: "none",
+              backgroundColor: "white",
+              cursor: "pointer",
+              color: "blue",
+              fontSize: "18px",
+              paddingLeft: "93%",
+            }}
+            fileName="extract.csv"
+          >
+            DOWNLOAD
+          </CsvDownload>
+          <DataTable data={extractedData} headersList={extractedDataHeaders} />
+        </div>
+      )}
     </div>
   );
 };

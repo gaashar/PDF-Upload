@@ -1,14 +1,49 @@
 import React, { useState } from "react";
+import { CLEAN_DATA_API, TRAIN_API } from "./constants";
 
 export const Train = () => {
   const [trainingFile, setTrainingFile] = useState(null);
-  const [isFileSelected, setIsFileSelected] = useState(false);
   const [dataReady, setDataReady] = useState(false);
+  const [action, setAction] = useState("");
+  const [error, setError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleButtonClick = (action) => {
-    let output;
-    if (output) setDataReady(true);
-    else setDataReady(false);
+  const handleButtonClick = (inputAction) => {
+    if (inputAction === "TRAIN") {
+      let file = trainingFile;
+      if (file) {
+        const formData = new FormData();
+        formData.append("file", file, file.name);
+        const requestOptions = {
+          method: "POST",
+          body: formData,
+          redirect: "follow",
+        };
+        setIsLoading(true);
+        fetch(TRAIN_API, requestOptions)
+          .then((response) => response.text())
+          .then((result) => {
+            setIsLoading(false);
+            setDataReady(true);
+          })
+          .catch((err) => {
+            setIsLoading(false);
+            setError(err);
+          });
+      }
+    } else if (inputAction === "CLEAR") {
+      setIsLoading(true);
+      fetch(CLEAN_DATA_API, { method: "POST", redirect: "follow" })
+        .then((response) => response.text())
+        .then((result) => {
+          setIsLoading(false);
+          setDataReady(true);
+        })
+        .catch((err) => {
+          setIsLoading(false);
+          setError(err);
+        });
+    }
   };
   return (
     <div style={{ textAlign: "center", marginTop: "100px" }}>
@@ -33,7 +68,11 @@ export const Train = () => {
             padding: "5px",
             fontWeight: "bold",
           }}
-          onClick={() => handleButtonClick("train")}
+          onClick={() => {
+            setAction("TRAIN");
+            setDataReady(false);
+            handleButtonClick("TRAIN");
+          }}
         >
           TRAIN
         </button>
@@ -44,13 +83,27 @@ export const Train = () => {
             padding: "5px",
             fontWeight: "bold",
           }}
-          onClick={() => handleButtonClick("clear")}
+          onClick={() => {
+            setAction("CLEAR");
+            setDataReady(false);
+            handleButtonClick("CLEAR");
+          }}
         >
           CLEAR
         </button>
         {dataReady && (
-          <div style={{ paddingTop: "10px" }}>
-            <h4>Data Training Successful!</h4>
+          <div style={{ paddingTop: "10px", color: "#3f51b5" }}>
+            <h4>DATA {action}ING SUCCESSFUL!</h4>
+          </div>
+        )}
+        {isLoading && (
+          <div style={{ paddingTop: "10px", color: "#3f51b5" }}>
+            <h4>DATA {action}ING IN PROCESS... PLEASE WAIT</h4>
+          </div>
+        )}
+        {error && (
+          <div style={{ paddingTop: "10px", color: "red" }}>
+            <h4>SOMETHING WENT WRONG. PLEASE TRY AFTER SOMETIME.</h4>
           </div>
         )}
       </div>
