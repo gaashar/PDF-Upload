@@ -47,7 +47,6 @@ export const Train = () => {
   };
   return (
     <div style={{ textAlign: "center", marginTop: "100px" }}>
-      {/* <h3>Train Data</h3> */}
       <div
         style={{ border: "1px solid Grey", width: "80%", marginLeft: "175px" }}
       >
