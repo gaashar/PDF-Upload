@@ -1,11 +1,25 @@
 import React, { useState } from "react";
 import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
-import { Extract } from "./extract";
-import { Train } from "./train";
+import { Extract } from "./components/extract";
+import { Train } from "./components/train";
+import { Other } from "./components/other";
 
 export const UploadPDF = () => {
   const [value, setValue] = useState(0);
+
+  let component;
+  switch (value) {
+    case 0:
+      component = <Extract />;
+      break;
+    case 1:
+      component = <Train />;
+      break;
+    case 2:
+      component = <Other />;
+      break;
+  }
 
   return (
     <div>
@@ -19,8 +33,9 @@ export const UploadPDF = () => {
       >
         <Tab label="OCR Extract" />
         <Tab label="Train and Clean" />
+        <Tab label="Others" />
       </Tabs>
-      {value === 0 ? <Extract /> : <Train />}
+      {component}
     </div>
   );
 };

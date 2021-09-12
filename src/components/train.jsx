@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { CLEAN_DATA_API, TRAIN_API } from "./constants";
+import { CLEAN_DATA_API, TRAIN_API } from "../constants";
 
 export const Train = () => {
   const [trainingFile, setTrainingFile] = useState(null);

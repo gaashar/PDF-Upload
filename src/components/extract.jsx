@@ -1,8 +1,8 @@
 import React, { useState, useRef } from "react";
 import CsvDownload from "react-json-to-csv";
 import { DataTable } from "./dataTable";
-import { EXTRACT_API } from "./constants";
-import { formatData } from "./helper";
+import { EXTRACT_API } from "../constants";
+import { formatData } from "../helper";
 
 export const Extract = () => {
   const [inputFile, setInputFile] = useState(null);

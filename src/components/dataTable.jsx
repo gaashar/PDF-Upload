@@ -1,5 +1,4 @@
 import React from "react";
-import dataInput from "./sample.json";
 
 export const DataTable = ({ data, headersList }) => {
   if (data) {
