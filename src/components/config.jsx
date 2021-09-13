@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ADD_COMMON_KEY_API, ADD_REMOVE_WORD_API } from "../constants";
 
-export const Other = () => {
+export const Config = () => {
   const [inputWord, setInputWord] = useState("");
   const [commonKeyFile, setCommonKeyFile] = useState(null);
   const [dataReady, setDataReady] = useState(false);
@@ -24,7 +24,6 @@ export const Other = () => {
     fetch(ADD_REMOVE_WORD_API, requestOptions)
       .then((response) => response.text())
       .then((result) => {
-        console.log(result);
         setIsLoading(false);
         setDataReady(true);
       })
@@ -62,7 +61,17 @@ export const Other = () => {
       <div
         style={{ border: "1px solid Grey", width: "80%", marginLeft: "175px" }}
       >
-        <div>
+        <div style={{ height: "100px" }}>
+          <p
+            style={{
+              fontSize: "larger",
+              marginRight: "700px",
+              color: "#3f51b5",
+              fontWeight: "bold",
+            }}
+          >
+            Add a word to a removal list
+          </p>
           <label style={{ padding: "30px", fontSize: "larger" }}>
             Enter word
           </label>
@@ -76,7 +85,7 @@ export const Other = () => {
           />
           <button
             style={{
-              margin: "50px 30px 50px 50px",
+              margin: "10px 30px 50px 50px",
               width: "150px",
               padding: "5px",
               fontWeight: "bold",
@@ -87,10 +96,20 @@ export const Other = () => {
               handleAdd();
             }}
           >
-            ADD/REMOVE
+            ADD
           </button>
         </div>
-        <div>
+        <div style={{ height: "100px" }}>
+          <p
+            style={{
+              fontSize: "larger",
+              marginRight: "780px",
+              color: "#3f51b5",
+              fontWeight: "bold",
+            }}
+          >
+            Add common keys
+          </p>
           <label style={{ padding: "30px", fontSize: "larger" }}>
             Browse Files
           </label>
@@ -103,7 +122,7 @@ export const Other = () => {
           />
           <button
             style={{
-              margin: "50px 30px 50px 50px",
+              margin: "10px 30px 50px 50px",
               width: "150px",
               padding: "5px",
               fontWeight: "bold",

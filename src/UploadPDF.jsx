@@ -3,7 +3,7 @@ import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
 import { Extract } from "./components/extract";
 import { Train } from "./components/train";
-import { Other } from "./components/other";
+import { Config } from "./components/config";
 
 export const UploadPDF = () => {
   const [value, setValue] = useState(0);
@@ -17,7 +17,7 @@ export const UploadPDF = () => {
       component = <Train />;
       break;
     case 2:
-      component = <Other />;
+      component = <Config />;
       break;
   }
 
@@ -33,7 +33,7 @@ export const UploadPDF = () => {
       >
         <Tab label="OCR Extract" />
         <Tab label="Train and Clean" />
-        <Tab label="Others" />
+        <Tab label="Config" />
       </Tabs>
       {component}
     </div>
