@@ -28,7 +28,13 @@ export const Extract = () => {
       setIsLoading(true);
       setIsFileSelected(false);
       fetch(EXTRACT_API, requestOptions)
-        .then((response) => response.text())
+        .then((response) => {
+          if (response.ok) response.text();
+          else {
+            setError(`ERROR:${response.status} ${response.statusText}`);
+            throw new Error(response);
+          }
+        })
         .then((result) => {
           const { headers, output } = formatData(result);
           setIsLoading(false);
@@ -37,12 +43,12 @@ export const Extract = () => {
         })
         .catch((err) => {
           setIsLoading(false);
-          setError(err);
         });
     }
   };
 
   const handleClear = () => {
+    setError(false);
     setIsFileSelected(false);
     setBankName("");
     inputRef.current.value = "";
@@ -80,6 +86,7 @@ export const Extract = () => {
               setIsFileSelected(true);
             }}
           />
+          <p>(upload .pdf file format as input)</p>
           <div>
             <button
               style={{
@@ -89,6 +96,7 @@ export const Extract = () => {
                 padding: "5px",
                 fontWeight: "bold",
               }}
+              disabled={!bankName && !inputFile}
               onClick={handleExtract}
             >
               EXTRACT
@@ -122,8 +130,8 @@ export const Extract = () => {
           </div>
         )}
         {error && (
-          <div style={{ paddingTop: "10px", color: "red" }}>
-            <h4>SOMETHING WENT WRONG. PLEASE TRY AFTER SOMETIME.</h4>
+          <div style={{ padding: "10px 0px", color: "red" }}>
+            <h4>{error}</h4>
           </div>
         )}
       </div>

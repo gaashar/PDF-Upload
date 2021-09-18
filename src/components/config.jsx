@@ -22,14 +22,19 @@ export const Config = () => {
     };
 
     fetch(ADD_REMOVE_WORD_API, requestOptions)
-      .then((response) => response.text())
+      .then((response) => {
+        if (response.ok) response.text();
+        else {
+          setError(`ERROR:${response.status} ${response.statusText}`);
+          throw new Error(response);
+        }
+      })
       .then((result) => {
         setIsLoading(false);
         setDataReady(true);
       })
       .catch((err) => {
         setIsLoading(false);
-        setError(err);
       });
   };
 
@@ -44,14 +49,19 @@ export const Config = () => {
         redirect: "follow",
       };
       fetch(ADD_COMMON_KEY_API, requestOptions)
-        .then((response) => response.text())
+        .then((response) => {
+          if (response.ok) response.text();
+          else {
+            setError(`ERROR:${response.status} ${response.statusText}`);
+            throw new Error(response);
+          }
+        })
         .then((result) => {
           setIsLoading(false);
           setDataReady(true);
         })
         .catch((err) => {
           setIsLoading(false);
-          setError(err);
         });
     }
   };
@@ -90,6 +100,7 @@ export const Config = () => {
               padding: "5px",
               fontWeight: "bold",
             }}
+            disabled={!inputWord}
             onClick={() => {
               setIsLoading(true);
               setDataReady(false);
@@ -99,7 +110,7 @@ export const Config = () => {
             ADD
           </button>
         </div>
-        <div style={{ height: "100px" }}>
+        <div style={{ height: "180px" }}>
           <p
             style={{
               fontSize: "larger",
@@ -114,19 +125,24 @@ export const Config = () => {
             Browse Files
           </label>
           <input
-            style={{ fontSize: "initial", width: "500px" }}
+            style={{
+              fontSize: "initial",
+              width: "500px",
+            }}
             type="file"
+            accept=".csv"
             onChange={(e) => {
               setCommonKeyFile(e.target.files[0]);
             }}
           />
           <button
             style={{
-              margin: "10px 30px 50px 50px",
+              margin: "10px 30px 5px 50px",
               width: "150px",
               padding: "5px",
               fontWeight: "bold",
             }}
+            disabled={!commonKeyFile}
             onClick={() => {
               setIsLoading(true);
               setDataReady(false);
@@ -135,6 +151,7 @@ export const Config = () => {
           >
             ADD
           </button>
+          <p>(upload .csv file format as input)</p>
         </div>
         {dataReady && (
           <div style={{ paddingTop: "10px", color: "#3f51b5" }}>
@@ -147,9 +164,7 @@ export const Config = () => {
           </div>
         )}
         {error && (
-          <div style={{ paddingTop: "10px", color: "red" }}>
-            <h4>SOMETHING WENT WRONG. PLEASE TRY AFTER SOMETIME.</h4>
-          </div>
+          <div style={{ padding: "10px 0px", color: "red" }}>{error}</div>
         )}
       </div>
     </div>

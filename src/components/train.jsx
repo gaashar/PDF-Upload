@@ -9,41 +9,42 @@ export const Train = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleButtonClick = (inputAction) => {
+    let api, requestOptions;
     if (inputAction === "TRAIN") {
+      api = TRAIN_API;
       let file = trainingFile;
       if (file) {
         const formData = new FormData();
         formData.append("file", file, file.name);
-        const requestOptions = {
+        requestOptions = {
           method: "POST",
           body: formData,
           redirect: "follow",
         };
-        setIsLoading(true);
-        fetch(TRAIN_API, requestOptions)
-          .then((response) => response.text())
-          .then((result) => {
-            setIsLoading(false);
-            setDataReady(true);
-          })
-          .catch((err) => {
-            setIsLoading(false);
-            setError(err);
-          });
       }
     } else if (inputAction === "CLEAR") {
-      setIsLoading(true);
-      fetch(CLEAN_DATA_API, { method: "POST", redirect: "follow" })
-        .then((response) => response.text())
-        .then((result) => {
-          setIsLoading(false);
-          setDataReady(true);
-        })
-        .catch((err) => {
-          setIsLoading(false);
-          setError(err);
-        });
+      api = CLEAN_DATA_API;
+      requestOptions = {
+        method: "POST",
+        redirect: "follow",
+      };
     }
+    setIsLoading(true);
+    fetch(api, requestOptions)
+      .then((response) => {
+        if (response.ok) response.text();
+        else {
+          setError(`ERROR:${response.status} ${response.statusText}`);
+          throw new Error(response);
+        }
+      })
+      .then((result) => {
+        setIsLoading(false);
+        setDataReady(true);
+      })
+      .catch((err) => {
+        setIsLoading(false);
+      });
   };
   return (
     <div style={{ textAlign: "center", marginTop: "100px" }}>
@@ -54,12 +55,14 @@ export const Train = () => {
           Browse Files
         </label>
         <input
-          style={{ fontSize: "initial", width: "500px" }}
+          style={{ fontSize: "initial", width: "500px", paddingTop: "50px" }}
           type="file"
+          accept=".csv"
           onChange={(e) => {
             setTrainingFile(e.target.files[0]);
           }}
         />
+        <p>(upload .csv file format as input)</p>
         <button
           style={{
             margin: "50px",
@@ -101,8 +104,8 @@ export const Train = () => {
           </div>
         )}
         {error && (
-          <div style={{ paddingTop: "10px", color: "red" }}>
-            <h4>SOMETHING WENT WRONG. PLEASE TRY AFTER SOMETIME.</h4>
+          <div style={{ padding: "10px 0px", color: "red" }}>
+            <h4>{error}</h4>
           </div>
         )}
       </div>
