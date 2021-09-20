@@ -25,11 +25,12 @@ export const Extract = () => {
         body: formData,
         redirect: "follow",
       };
+      setError(false);
       setIsLoading(true);
       setIsFileSelected(false);
       fetch(EXTRACT_API, requestOptions)
         .then((response) => {
-          if (response.ok) response.text();
+          if (response.ok) return response.text();
           else {
             setError(`ERROR:${response.status} ${response.statusText}`);
             throw new Error(response);
@@ -96,7 +97,7 @@ export const Extract = () => {
                 padding: "5px",
                 fontWeight: "bold",
               }}
-              disabled={!bankName && !inputFile}
+              disabled={!bankName || !inputFile}
               onClick={handleExtract}
             >
               EXTRACT
@@ -110,8 +111,9 @@ export const Extract = () => {
                 fontWeight: "bold",
               }}
               onClick={handleClear}
+              disabled={!bankName || !inputFile}
             >
-              CLEAR
+              RESET
             </button>
           </div>
         </div>

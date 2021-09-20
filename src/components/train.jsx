@@ -32,7 +32,7 @@ export const Train = () => {
     setIsLoading(true);
     fetch(api, requestOptions)
       .then((response) => {
-        if (response.ok) response.text();
+        if (response.ok) return response.text();
         else {
           setError(`ERROR:${response.status} ${response.statusText}`);
           throw new Error(response);
@@ -71,10 +71,12 @@ export const Train = () => {
             fontWeight: "bold",
           }}
           onClick={() => {
+            setError(false);
             setAction("TRAIN");
             setDataReady(false);
             handleButtonClick("TRAIN");
           }}
+          disabled={!trainingFile}
         >
           TRAIN
         </button>
@@ -86,10 +88,12 @@ export const Train = () => {
             fontWeight: "bold",
           }}
           onClick={() => {
+            setError(false);
             setAction("CLEAR");
             setDataReady(false);
             handleButtonClick("CLEAR");
           }}
+          disabled={!trainingFile}
         >
           CLEAR
         </button>

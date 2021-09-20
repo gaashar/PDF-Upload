@@ -23,7 +23,7 @@ export const Config = () => {
 
     fetch(ADD_REMOVE_WORD_API, requestOptions)
       .then((response) => {
-        if (response.ok) response.text();
+        if (response.ok) return response.text();
         else {
           setError(`ERROR:${response.status} ${response.statusText}`);
           throw new Error(response);
@@ -50,7 +50,7 @@ export const Config = () => {
       };
       fetch(ADD_COMMON_KEY_API, requestOptions)
         .then((response) => {
-          if (response.ok) response.text();
+          if (response.ok) return response.text();
           else {
             setError(`ERROR:${response.status} ${response.statusText}`);
             throw new Error(response);
@@ -80,7 +80,7 @@ export const Config = () => {
               fontWeight: "bold",
             }}
           >
-            Add a word to a removal list
+            Add a word to the removal list
           </p>
           <label style={{ padding: "30px", fontSize: "larger" }}>
             Enter word
@@ -102,6 +102,7 @@ export const Config = () => {
             }}
             disabled={!inputWord}
             onClick={() => {
+              setError(false);
               setIsLoading(true);
               setDataReady(false);
               handleAdd();
@@ -144,6 +145,7 @@ export const Config = () => {
             }}
             disabled={!commonKeyFile}
             onClick={() => {
+              setError(false);
               setIsLoading(true);
               setDataReady(false);
               handleCommonKey();
